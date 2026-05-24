@@ -10,6 +10,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed:catalog": "tsx prisma/seed-catalog.ts",
+    "db:seed:products": "tsx prisma/seed-products.ts",
+    "db:seed": "tsx prisma/seed-catalog.ts && tsx prisma/seed-products.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
