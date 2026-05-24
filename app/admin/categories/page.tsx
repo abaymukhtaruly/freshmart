@@ -1,6 +1,8 @@
 import CategoryForm from "@/components/admin/CategoryForm";
-import DeleteRowButton from "@/components/admin/DeleteRowButton";
-import { createCategory, deleteCategory, updateCategory } from "@/actions/categories";
+import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
+import { createCategory, updateCategory } from "@/actions/categories";
+
+export const dynamic = "force-dynamic";
 import { getCategories } from "@/lib/queries";
 
 export default async function AdminCategoriesPage() {
@@ -62,10 +64,7 @@ export default async function AdminCategoriesPage() {
                         </div>
                       </details>
                       <span className="mx-2 text-border">|</span>
-                      <DeleteRowButton
-                        label={category.name}
-                        onDelete={() => deleteCategory(category.id)}
-                      />
+                      <DeleteCategoryButton id={category.id} label={category.name} />
                     </td>
                   </tr>
                 );

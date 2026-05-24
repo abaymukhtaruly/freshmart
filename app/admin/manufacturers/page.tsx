@@ -1,10 +1,8 @@
 import ManufacturerForm from "@/components/admin/ManufacturerForm";
-import DeleteRowButton from "@/components/admin/DeleteRowButton";
-import {
-  createManufacturer,
-  deleteManufacturer,
-  updateManufacturer,
-} from "@/actions/manufacturers";
+import DeleteManufacturerButton from "@/components/admin/DeleteManufacturerButton";
+import { createManufacturer, updateManufacturer } from "@/actions/manufacturers";
+
+export const dynamic = "force-dynamic";
 import { getManufacturers } from "@/lib/queries";
 
 export default async function AdminManufacturersPage() {
@@ -63,9 +61,9 @@ export default async function AdminManufacturersPage() {
                         </div>
                       </details>
                       <span className="mx-2 text-border">|</span>
-                      <DeleteRowButton
+                      <DeleteManufacturerButton
+                        id={manufacturer.id}
                         label={manufacturer.name}
-                        onDelete={() => deleteManufacturer(manufacturer.id)}
                       />
                     </td>
                   </tr>

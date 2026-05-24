@@ -1,22 +1,20 @@
 "use client";
 
 import { useTransition } from "react";
-import type { ActionResult } from "@/lib/action-result";
+import { deleteCategory } from "@/actions/categories";
 
-export default function DeleteRowButton({
+export default function DeleteCategoryButton({
+  id,
   label,
-  onDelete,
 }: {
+  id: string;
   label: string;
-  onDelete: () => Promise<ActionResult>;
 }) {
   const [pending, startTransition] = useTransition();
 
   const handleDelete = () => {
     if (!confirm(`Удалить «${label}»?`)) return;
-    startTransition(async () => {
-      await onDelete();
-    });
+    startTransition(() => void deleteCategory(id));
   };
 
   return (
