@@ -5,14 +5,16 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { actionError, actionSuccess, type ActionResult } from "@/lib/action-result";
-
-// TODO: Protect admin actions with authentication (require ADMIN role).
+import { assertAdminAction } from "@/lib/auth";
 
 const urlSchema = z
   .string()
-  .url("Укажите корректный URL изображения")
-  .or(z.literal(""))
-  .transform((v) => (v.length > 0 ? v : undefined));
+  .optional()
+  .transform((v) => (v && v.trim().length > 0 ? v.trim() : undefined))
+  .refine(
+    (v) => !v || v.startsWith("/") || z.string().url().safeParse(v).success,
+    "Укажите корректный URL изображения"
+  );
 
 const productSchema = z.object({
   title: z.string().trim().min(1, "Название обязательно"),
@@ -56,6 +58,9 @@ export async function createProduct(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   const parsed = parseProductForm(formData);
 
   if (!parsed.success) {
@@ -83,6 +88,9 @@ export async function updateProduct(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   const parsed = parseProductForm(formData);
 
   if (!parsed.success) {
@@ -108,6 +116,9 @@ export async function updateProduct(
 }
 
 export async function deactivateProduct(id: string): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   try {
     await prisma.product.update({
       where: { id },
@@ -123,6 +134,9 @@ export async function deactivateProduct(id: string): Promise<ActionResult> {
 }
 
 export async function activateProduct(id: string): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   try {
     await prisma.product.update({
       where: { id },

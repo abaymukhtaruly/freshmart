@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
+import { AdminHomeLink } from "@/components/admin/AdminCatalogActions";
 import { getActiveProducts } from "@/lib/queries";
 
 export default async function HomePage() {
@@ -82,12 +83,7 @@ export default async function HomePage() {
             <p className="text-muted mb-4">
               Каталог пуст. Настройте данные в админ-панели.
             </p>
-            <Link
-              href="/admin"
-              className="inline-block bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-dark transition-colors"
-            >
-              Открыть админ-панель
-            </Link>
+            <AdminHomeLink />
           </div>
         )}
       </main>

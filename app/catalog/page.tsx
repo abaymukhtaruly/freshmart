@@ -1,7 +1,10 @@
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import CatalogSidebar from "@/components/CatalogSidebar";
 import ProductCard from "@/components/ProductCard";
+import {
+  AdminCatalogHeaderAction,
+  AdminEmptyCatalogLinks,
+} from "@/components/admin/AdminCatalogActions";
 import { getActiveProducts, getManufacturers } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
 
@@ -60,31 +63,13 @@ export default async function CatalogPage({
                 {products.length} товаров
               </span>
             </h2>
-            <Link
-              href="/admin/products/new"
-              className="text-sm text-primary font-medium hover:underline"
-            >
-              + Добавить товар
-            </Link>
+            <AdminCatalogHeaderAction />
           </div>
 
           {products.length === 0 ? (
             <div className="bg-white border border-border rounded-xl p-12 text-center">
               <p className="text-muted mb-4">В каталоге пока нет товаров</p>
-              <div className="flex justify-center gap-4 text-sm">
-                <Link href="/admin/categories" className="text-primary font-medium hover:underline">
-                  Создать категории
-                </Link>
-                <Link
-                  href="/admin/manufacturers"
-                  className="text-primary font-medium hover:underline"
-                >
-                  Создать производителей
-                </Link>
-                <Link href="/admin/products/new" className="text-primary font-medium hover:underline">
-                  Добавить товар
-                </Link>
-              </div>
+              <AdminEmptyCatalogLinks />
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

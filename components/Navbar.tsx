@@ -1,6 +1,7 @@
 import Link from "next/link";
 import NavbarAuth from "@/components/NavbarAuth";
 import NavbarCart from "@/components/NavbarCart";
+import NavbarAdminLink from "@/components/NavbarAdminLink";
 
 export default function Navbar() {
   return (
@@ -44,12 +45,7 @@ export default function Navbar() {
         >
           Каталог
         </Link>
-        <Link
-          href="/admin"
-          className="text-sm font-medium text-muted hover:text-primary transition-colors"
-        >
-          Админ
-        </Link>
+        <NavbarAdminLink />
         <div className="flex items-center gap-6 ml-auto">
           <NavbarAuth />
           <NavbarCart />

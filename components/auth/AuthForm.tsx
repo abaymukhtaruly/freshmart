@@ -9,13 +9,20 @@ type AuthFormProps = {
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
   submitLabel: string;
   fields: "login" | "register";
+  callbackUrl?: string;
 };
 
-export default function AuthForm({ action, submitLabel, fields }: AuthFormProps) {
+export default function AuthForm({
+  action,
+  submitLabel,
+  fields,
+  callbackUrl,
+}: AuthFormProps) {
   const [state, formAction, pending] = useActionState(action, null);
 
   return (
     <form action={formAction} className="space-y-4">
+      {callbackUrl ? <input type="hidden" name="callbackUrl" value={callbackUrl} /> : null}
       <FormMessage state={state} />
 
       {fields === "register" && (

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import FormMessage from "@/components/admin/FormMessage";
+import ImageUploadField from "@/components/admin/ImageUploadField";
 import type { ActionResult } from "@/lib/action-result";
 import type { Category, Manufacturer, Product } from "@prisma/client";
 
@@ -66,19 +67,7 @@ export default function ProductForm({
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-text-primary mb-1">
-            URL изображения
-          </label>
-          <input
-            name="imageUrl"
-            type="url"
-            placeholder="https://..."
-            defaultValue={product?.imageUrl ?? ""}
-            className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
-          />
-          <p className="text-xs text-muted mt-1">Вставьте ссылку на hosted-изображение</p>
-        </div>
+        <ImageUploadField defaultValue={product?.imageUrl} />
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">

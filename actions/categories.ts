@@ -4,8 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { actionError, actionSuccess, type ActionResult } from "@/lib/action-result";
-
-// TODO: Protect admin actions with authentication (require ADMIN role).
+import { assertAdminAction } from "@/lib/auth";
 
 const categorySchema = z.object({
   name: z.string().trim().min(1, "Название обязательно"),
@@ -19,6 +18,9 @@ export async function createCategory(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   const parsed = categorySchema.safeParse({
     name: formData.get("name"),
     parentId: formData.get("parentId"),
@@ -43,6 +45,9 @@ export async function updateCategory(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   const parsed = categorySchema.safeParse({
     name: formData.get("name"),
     parentId: formData.get("parentId"),
@@ -66,6 +71,9 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(id: string): Promise<ActionResult> {
+  const denied = await assertAdminAction();
+  if (denied) return actionError(denied.error);
+
   try {
     const productCount = await prisma.product.count({ where: { categoryId: id } });
     if (productCount > 0) {
