@@ -7,9 +7,10 @@ import { getProductById } from "@/lib/queries";
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await getProductById(params.id);
+  const resolvedParams = await params;
+  const product = await getProductById(resolvedParams.id);
 
   if (!product || !product.isActive) {
     notFound();
@@ -102,8 +103,13 @@ export default async function ProductPage({
                   {product.price.toLocaleString("ru-RU")} ₸
                 </p>
               </div>
-              <div className="w-full sm:w-auto transform scale-110 sm:scale-125 origin-center sm:origin-right">
-                <AddToCartButton productId={product.id} />
+              <div className="flex flex-col items-center sm:items-end gap-2">
+                <div className="w-full sm:w-auto transform scale-110 sm:scale-125 origin-center sm:origin-right">
+                  <AddToCartButton productId={product.id} />
+                </div>
+                <p className="text-[11px] text-muted text-center sm:text-right max-w-[200px] mt-2 sm:mt-1 leading-tight">
+                  При нажатии добавится 1 шт. ({product.packaging})
+                </p>
               </div>
             </div>
           </div>

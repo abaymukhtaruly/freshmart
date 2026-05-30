@@ -19,6 +19,7 @@ export async function getActiveProducts(filters?: {
   categoryId?: string;
   manufacturerId?: string;
   search?: string;
+  sort?: string;
 }) {
   const where: Prisma.ProductWhereInput = { isActive: true };
 
@@ -28,9 +29,16 @@ export async function getActiveProducts(filters?: {
     where.title = { contains: filters.search, mode: "insensitive" };
   }
 
+  let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
+  if (filters?.sort === "price_asc") {
+    orderBy = { price: "asc" };
+  } else if (filters?.sort === "price_desc") {
+    orderBy = { price: "desc" };
+  }
+
   return prisma.product.findMany({
     where,
-    orderBy: { createdAt: "desc" },
+    orderBy,
     include: { category: true, manufacturer: true },
   });
 }

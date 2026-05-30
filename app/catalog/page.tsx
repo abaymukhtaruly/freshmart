@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import CatalogSidebar from "@/components/CatalogSidebar";
 import ProductCard from "@/components/ProductCard";
+import SortSelect from "@/components/SortSelect";
 import {
   AdminCatalogHeaderAction,
   AdminEmptyCatalogLinks,
@@ -8,7 +9,7 @@ import {
 import { getActiveProducts, getManufacturers } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
 
-type SearchParams = Promise<{ category?: string; manufacturer?: string }>;
+type SearchParams = Promise<{ category?: string; manufacturer?: string; sort?: string }>;
 
 export default async function CatalogPage({
   searchParams,
@@ -34,6 +35,7 @@ export default async function CatalogPage({
     products = await getActiveProducts({
       categoryId: params.category,
       manufacturerId: params.manufacturer,
+      sort: params.sort,
     });
 
     if (params.category) {
@@ -57,12 +59,15 @@ export default async function CatalogPage({
 
         <div className="flex-1">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-text-primary">
-              {activeCategoryName}{" "}
-              <span className="text-sm font-medium text-muted ml-2">
-                {products.length} товаров
-              </span>
-            </h2>
+            <div className="flex items-center gap-4">
+              <h2 className="text-2xl font-bold text-text-primary flex items-baseline">
+                {activeCategoryName}
+                <span className="text-sm font-medium text-muted ml-2">
+                  {products.length} товаров
+                </span>
+              </h2>
+              <SortSelect />
+            </div>
             <AdminCatalogHeaderAction />
           </div>
 
