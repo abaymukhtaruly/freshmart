@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import NavbarAuth from "@/components/NavbarAuth";
 import NavbarCart from "@/components/NavbarCart";
 import NavbarAdminLink from "@/components/NavbarAdminLink";
@@ -27,7 +28,11 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-2 text-primary">
           <span className="font-bold text-xl tracking-tight">FreshMart</span>
         </Link>
-        <NavbarSearch />
+        <Suspense fallback={
+          <div className="flex-1 max-w-2xl h-9 bg-background border border-border rounded-lg animate-pulse" />
+        }>
+          <NavbarSearch />
+        </Suspense>
         <Link
           href="/catalog"
           className="text-sm font-medium text-text-primary hover:text-primary transition-colors"
