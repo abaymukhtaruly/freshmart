@@ -9,7 +9,7 @@ import {
 import { getActiveProducts, getManufacturers } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
 
-type SearchParams = Promise<{ category?: string; manufacturer?: string; sort?: string }>;
+type SearchParams = Promise<{ category?: string; manufacturer?: string; sort?: string; search?: string }>;
 
 export default async function CatalogPage({
   searchParams,
@@ -36,9 +36,12 @@ export default async function CatalogPage({
       categoryId: params.category,
       manufacturerId: params.manufacturer,
       sort: params.sort,
+      search: params.search,
     });
 
-    if (params.category) {
+    if (params.search) {
+      activeCategoryName = `Поиск: ${params.search}`;
+    } else if (params.category) {
       const cat = allCategories.find((c) => c.id === params.category);
       if (cat) activeCategoryName = cat.name;
     }

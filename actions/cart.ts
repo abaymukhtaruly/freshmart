@@ -11,11 +11,6 @@ const productIdSchema = z.string().min(1);
 const quantitySchema = z.coerce.number().int().min(1).max(999);
 
 export async function addToCart(productId: string): Promise<ActionResult> {
-  const user = await getCurrentUser();
-  if (!user) {
-    return actionError("Необходима авторизация", "UNAUTHORIZED");
-  }
-
   const idResult = productIdSchema.safeParse(productId);
   if (!idResult.success) return actionError("Неверный товар");
 
