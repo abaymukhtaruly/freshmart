@@ -1,4 +1,5 @@
 import AddToCartButton from "@/components/AddToCartButton";
+import Link from "next/link";
 
 export default function ProductCard({
   productId,
@@ -18,9 +19,9 @@ export default function ProductCard({
   packaging: string;
 }) {
   return (
-    <div className="product-card bg-white rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-200 shadow-sm hover:-translate-y-[2px] hover:border-primary group relative cursor-pointer">
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-        <div className="flex gap-1.5">
+    <div className="product-card bg-white rounded-xl border border-border overflow-hidden flex flex-col transition-all duration-200 shadow-sm hover:-translate-y-[2px] hover:border-primary group relative">
+      <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 pointer-events-none">
+        <div className="flex gap-1.5 pointer-events-auto">
           <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
             <span
               className="material-symbols-outlined text-[14px]"
@@ -34,24 +35,26 @@ export default function ProductCard({
             Халяль
           </span>
         </div>
-        <span className="bg-white/90 text-primary border border-primary/20 text-[10px] font-bold px-2 py-1 rounded-md w-fit shadow-sm">
+        <span className="bg-white/90 text-primary border border-primary/20 text-[10px] font-bold px-2 py-1 rounded-md w-fit shadow-sm pointer-events-auto">
           {manufacturer}
         </span>
       </div>
 
-      <div className="h-48 relative overflow-hidden bg-background">
+      <Link href={`/product/${productId}`} className="h-48 relative overflow-hidden bg-background block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt={title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           src={imageUrl}
         />
-      </div>
+      </Link>
 
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-sm font-semibold text-text-primary mb-1 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-          {title}
-        </h3>
+        <Link href={`/product/${productId}`}>
+          <h3 className="text-sm font-semibold text-text-primary mb-1 line-clamp-2 leading-snug group-hover:text-primary transition-colors cursor-pointer">
+            {title}
+          </h3>
+        </Link>
         <p className="text-[11px] text-muted mb-1">
           {packaging} • {manufacturer}
         </p>

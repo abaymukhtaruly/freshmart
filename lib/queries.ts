@@ -35,6 +35,13 @@ export async function getActiveProducts(filters?: {
   });
 }
 
+export async function getProductById(id: string) {
+  return prisma.product.findUnique({
+    where: { id },
+    include: { category: true, manufacturer: true },
+  });
+}
+
 export async function getAdminProducts(filters?: {
   categoryId?: string;
   search?: string;
