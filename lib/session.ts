@@ -1,10 +1,11 @@
 import { cookies } from "next/headers";
 import { randomUUID } from "crypto";
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/constants";
 import type { User } from "@prisma/client";
 
-export async function getCurrentUser(): Promise<User | null> {
+export const getCurrentUser = cache(async (): Promise<User | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
@@ -19,7 +20,7 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   return session.user;
-}
+});
 
 export async function createUserSession(userId: string): Promise<void> {
   const sessionToken = randomUUID();
