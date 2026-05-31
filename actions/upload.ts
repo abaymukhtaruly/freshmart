@@ -2,7 +2,7 @@
 
 import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
-import { put, getDownloadUrl } from "@vercel/blob";
+import { put } from "@vercel/blob";
 import { actionError, actionSuccess, type ActionResult } from "@/lib/action-result";
 import { assertAdminAction } from "@/lib/auth";
 
@@ -35,8 +35,9 @@ export async function uploadProductImage(
         access: "private",
         addRandomSuffix: true,
       });
-      const downloadUrl = await getDownloadUrl(blob.url);
-      return actionSuccess({ url: downloadUrl });
+      // Return API route URL instead of blob URL directly
+      const apiUrl = `/api/blob-image?url=${encodeURIComponent(blob.url)}`;
+      return actionSuccess({ url: apiUrl });
     }
 
     if (process.env.NODE_ENV === "development") {
