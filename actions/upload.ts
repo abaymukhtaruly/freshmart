@@ -31,11 +31,9 @@ export async function uploadProductImage(
 
   try {
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const arrayBuffer = await file.arrayBuffer();
-      const blob = await put(key, arrayBuffer, {
+      const blob = await put(key, file, {
         access: "private",
         addRandomSuffix: true,
-        contentType: file.type,
       });
       return actionSuccess({ url: blob.url });
     }
@@ -52,10 +50,7 @@ export async function uploadProductImage(
     return actionError(
       "Загрузка не настроена. Добавьте BLOB_READ_WRITE_TOKEN в Vercel или используйте URL."
     );
-  } catch (error) {
-    console.error("Image upload error:", error);
-    return actionError(
-      error instanceof Error ? error.message : "Не удалось загрузить изображение"
-    );
+  } catch {
+    return actionError("Не удалось загрузить изображение");
   }
 }
