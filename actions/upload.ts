@@ -2,7 +2,7 @@
 
 import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
-import { put } from "@vercel/blob";
+import { put, getDownloadUrl } from "@vercel/blob";
 import { actionError, actionSuccess, type ActionResult } from "@/lib/action-result";
 import { assertAdminAction } from "@/lib/auth";
 
@@ -35,7 +35,8 @@ export async function uploadProductImage(
         access: "private",
         addRandomSuffix: true,
       });
-      return actionSuccess({ url: blob.url });
+      const downloadUrl = await getDownloadUrl(blob.url);
+      return actionSuccess({ url: downloadUrl });
     }
 
     if (process.env.NODE_ENV === "development") {
