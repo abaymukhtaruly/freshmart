@@ -33,7 +33,7 @@ export async function uploadProductImage(
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       const arrayBuffer = await file.arrayBuffer();
       const blob = await put(key, arrayBuffer, {
-        access: "public",
+        access: "private",
         addRandomSuffix: true,
         contentType: file.type,
       });
