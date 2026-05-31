@@ -1,11 +1,14 @@
 import CategoryForm from "@/components/admin/CategoryForm";
 import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
 import { createCategory, updateCategory } from "@/actions/categories";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 import { getCategories } from "@/lib/queries";
 
 export default async function AdminCategoriesPage() {
+  const locale = await getLocale();
   let categories: Awaited<ReturnType<typeof getCategories>> = [];
 
   try {
@@ -16,29 +19,30 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-6">Категории</h1>
+      <h1 className="text-2xl font-bold text-text-primary mb-6">{t(locale, "admin.categories")}</h1>
 
       <CategoryForm
         categories={categories}
         action={createCategory}
-        submitLabel="Добавить"
+        submitLabel={t(locale, "admin.add_category")}
+        locale={locale}
       />
 
       <div className="mt-8 bg-white border border-border rounded-xl overflow-hidden shadow-sm">
         <table className="w-full text-sm">
           <thead className="bg-background border-b border-border">
             <tr>
-              <th className="text-left px-4 py-3 font-semibold">Название</th>
-              <th className="text-left px-4 py-3 font-semibold">Родитель</th>
-              <th className="text-left px-4 py-3 font-semibold">Товаров</th>
-              <th className="text-right px-4 py-3 font-semibold">Действия</th>
+              <th className="text-left px-4 py-3 font-semibold">{t(locale, "form.name")}</th>
+              <th className="text-left px-4 py-3 font-semibold">{locale === "kz" ? "Ата-аналығы" : "Родитель"}</th>
+              <th className="text-left px-4 py-3 font-semibold">{t(locale, "catalog.products_count")}</th>
+              <th className="text-right px-4 py-3 font-semibold">{locale === "kz" ? "Әрекеттер" : "Действия"}</th>
             </tr>
           </thead>
           <tbody>
             {categories.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-4 py-12 text-center text-muted">
-                  Категорий пока нет
+                  {locale === "kz" ? "Санаттар әлі жоқ" : "Категорий пока нет"}
                 </td>
               </tr>
             ) : (

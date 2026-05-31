@@ -8,6 +8,8 @@ import {
 } from "@/components/admin/AdminCatalogActions";
 import { getActiveProducts, getManufacturers } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 type SearchParams = Promise<{ category?: string; manufacturer?: string; sort?: string; search?: string }>;
 
@@ -17,10 +19,11 @@ export default async function CatalogPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const locale = await getLocale();
 
   let products: Awaited<ReturnType<typeof getActiveProducts>> = [];
   let manufacturers: Awaited<ReturnType<typeof getManufacturers>> = [];
-  let activeCategoryName = "Каталог";
+  let activeCategoryName = t(locale, "catalog.catalog");
   let sidebarCategories: Parameters<typeof CatalogSidebar>[0]["categories"] = [];
 
   try {
@@ -40,7 +43,7 @@ export default async function CatalogPage({
     });
 
     if (params.search) {
-      activeCategoryName = `Поиск: ${params.search}`;
+      activeCategoryName = `${t(locale, "catalog.search")} ${params.search}`;
     } else if (params.category) {
       const cat = allCategories.find((c) => c.id === params.category);
       if (cat) activeCategoryName = cat.name;
@@ -52,35 +55,41 @@ export default async function CatalogPage({
   return (
     <>
       <Navbar />
-      <main className="flex-1 max-w-[1440px] mx-auto w-full px-8 py-6 flex gap-8">
-        <CatalogSidebar
-          categories={sidebarCategories}
-          manufacturers={manufacturers}
-          activeCategoryId={params.category}
-          activeManufacturerId={params.manufacturer}
-        />
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6 flex flex-col md:flex-row gap-6 md:gap-8">
+        {/* Sidebar - hidden on mobile, shown on md+ */}
+        <div className="hidden md:block">
+          <CatalogSidebar
+            categories={sidebarCategories}
+            manufacturers={manufacturers}
+            activeCategoryId={params.category}
+            activeManufacturerId={params.manufacturer}
+            locale={locale}
+          />
+        </div>
 
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
             <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold text-text-primary flex items-baseline">
+              <h2 className="text-xl md:text-2xl font-bold text-text-primary flex items-baseline">
                 {activeCategoryName}
                 <span className="text-sm font-medium text-muted ml-2">
-                  {products.length} товаров
+                  {products.length} {t(locale, "catalog.products_count")}
                 </span>
               </h2>
-              <SortSelect />
             </div>
-            <AdminCatalogHeaderAction />
+            <div className="flex items-center gap-3">
+              <SortSelect locale={locale} />
+              <AdminCatalogHeaderAction />
+            </div>
           </div>
 
           {products.length === 0 ? (
-            <div className="bg-white border border-border rounded-xl p-12 text-center">
-              <p className="text-muted mb-4">В каталоге пока нет товаров</p>
+            <div className="bg-white border border-border rounded-xl p-8 md:p-12 text-center">
+              <p className="text-muted mb-4">{t(locale, "catalog.empty")}</p>
               <AdminEmptyCatalogLinks />
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -94,6 +103,7 @@ export default async function CatalogPage({
                   }
                   minOrder={product.minOrder}
                   packaging={product.packaging}
+                  locale={locale}
                 />
               ))}
             </div>

@@ -2,15 +2,18 @@
 
 import { useRef, useState, useTransition } from "react";
 import { uploadProductImage } from "@/actions/upload";
+import type { Locale } from "@/lib/i18n";
 
 type ImageUploadFieldProps = {
   name?: string;
   defaultValue?: string | null;
+  locale?: Locale;
 };
 
 export default function ImageUploadField({
   name = "imageUrl",
   defaultValue,
+  locale = "ru",
 }: ImageUploadFieldProps) {
   const [imageUrl, setImageUrl] = useState(defaultValue ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -34,14 +37,14 @@ export default function ImageUploadField({
 
   return (
     <div className="sm:col-span-2 space-y-3">
-      <label className="block text-sm font-medium text-text-primary">Изображение</label>
+      <label className="block text-sm font-medium text-text-primary">{locale === "kz" ? "Сурет" : "Изображение"}</label>
 
       {imageUrl ? (
         <div className="flex items-start gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}
-            alt="Превью"
+            alt={locale === "kz" ? "Алдындағы көрінісі" : "Превью"}
             className="w-24 h-24 rounded-lg object-cover border border-border bg-background"
           />
           <button
@@ -49,7 +52,7 @@ export default function ImageUploadField({
             onClick={() => setImageUrl("")}
             className="text-xs text-accent hover:underline"
           >
-            Удалить
+            {locale === "kz" ? "Жою" : "Удалить"}
           </button>
         </div>
       ) : null}
@@ -70,16 +73,16 @@ export default function ImageUploadField({
           onClick={() => inputRef.current?.click()}
           className="bg-white border border-border text-sm font-medium px-4 py-2 rounded-lg hover:border-primary transition-colors disabled:opacity-50"
         >
-          {pending ? "Загрузка..." : "Загрузить файл"}
+          {pending ? (locale === "kz" ? "Жүктелуде..." : "Загрузка...") : (locale === "kz" ? "Файл жүктеу" : "Загрузить файл")}
         </button>
-        <span className="text-xs text-muted">или вставьте URL ниже</span>
+        <span className="text-xs text-muted">{locale === "kz" ? "немесе төмеңде URL-ды орналастырыңыз" : "или вставьте URL ниже"}</span>
       </div>
 
       <input
-        type="url"
+        type="text"
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
-        placeholder="https://..."
+        placeholder="https://... or /uploads/..."
         className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
       />
 

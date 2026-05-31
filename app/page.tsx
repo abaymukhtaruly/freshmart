@@ -3,8 +3,11 @@ import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import { AdminHomeLink } from "@/components/admin/AdminCatalogActions";
 import { getActiveProducts } from "@/lib/queries";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 export default async function HomePage() {
+  const locale = await getLocale();
   let featured: Awaited<ReturnType<typeof getActiveProducts>> = [];
 
   try {
@@ -17,23 +20,23 @@ export default async function HomePage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 max-w-[1440px] mx-auto w-full px-8 py-6">
-        <div className="bg-background-dark rounded-xl mb-8 overflow-hidden flex items-stretch h-[240px] relative">
-          <div className="p-10 flex-1 flex flex-col justify-center z-10">
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6">
+        <div className="bg-background-dark rounded-xl mb-8 overflow-hidden flex items-stretch h-[200px] md:h-[240px] relative">
+          <div className="p-6 md:p-10 flex-1 flex flex-col justify-center z-10">
             <span className="inline-block bg-white text-background-dark text-xs font-bold px-3 py-1 rounded-full mb-4 w-fit shadow-sm">
-              Опт и Розница
+              {t(locale, "home.badge")}
             </span>
-            <h1 className="text-3xl font-bold text-white mb-4 leading-tight max-w-md">
-              Свежезамороженные продукты высшего качества
+            <h1 className="text-xl md:text-3xl font-bold text-white mb-3 md:mb-4 leading-tight max-w-md">
+              {t(locale, "home.title")}
             </h1>
-            <p className="text-sm text-white/80 max-w-sm mb-6">
-              Строгий контроль температуры -18°C от склада до вашей двери. Гарантия свежести.
+            <p className="text-xs md:text-sm text-white/80 max-w-sm mb-4 md:mb-6 hidden sm:block">
+              {t(locale, "home.subtitle")}
             </p>
             <Link
               href="/catalog"
-              className="bg-primary text-white px-6 py-2 rounded-lg font-bold w-fit hover:bg-primary-dark transition-colors"
+              className="bg-primary text-white px-4 md:px-6 py-2 rounded-lg font-bold w-fit hover:bg-primary-dark transition-colors text-sm md:text-base"
             >
-              Смотреть каталог
+              {t(locale, "home.cta")}
             </Link>
           </div>
           <div className="w-1/2 relative hidden md:block">
@@ -50,15 +53,15 @@ export default async function HomePage() {
         {featured.length > 0 && (
           <>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-text-primary">Популярные товары</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-text-primary">{t(locale, "home.popular")}</h2>
               <Link
                 href="/catalog"
                 className="text-sm font-medium text-primary hover:underline"
               >
-                Весь каталог →
+                {t(locale, "home.all_catalog")}
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {featured.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -72,6 +75,7 @@ export default async function HomePage() {
                   }
                   minOrder={product.minOrder}
                   packaging={product.packaging}
+                  locale={locale}
                 />
               ))}
             </div>
@@ -81,7 +85,7 @@ export default async function HomePage() {
         {featured.length === 0 && (
           <div className="bg-white border border-border rounded-xl p-8 text-center">
             <p className="text-muted mb-4">
-              Каталог пуст. Настройте данные в админ-панели.
+              {t(locale, "home.empty")}
             </p>
             <AdminHomeLink />
           </div>

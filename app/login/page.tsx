@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import AuthForm, { AuthFormFooter } from "@/components/auth/AuthForm";
 import { login } from "@/actions/auth";
 import { getCurrentUser } from "@/lib/session";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 import { Role } from "@prisma/client";
 
 type SearchParams = Promise<{ callbackUrl?: string; error?: string }>;
@@ -15,6 +17,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const user = await getCurrentUser();
+  const locale = await getLocale();
 
   if (user) {
     if (user.role === Role.ADMIN && params.callbackUrl?.startsWith("/admin")) {

@@ -6,6 +6,8 @@ import FormMessage from "@/components/admin/FormMessage";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import type { ActionResult } from "@/lib/action-result";
 import type { Category, Manufacturer, Product } from "@prisma/client";
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 
 type ProductFormProps = {
   categories: Category[];
@@ -16,6 +18,7 @@ type ProductFormProps = {
   ) => Promise<ActionResult>;
   product?: Product;
   submitLabel: string;
+  locale?: Locale;
 };
 
 export default function ProductForm({
@@ -24,6 +27,7 @@ export default function ProductForm({
   action,
   product,
   submitLabel,
+  locale = "ru",
 }: ProductFormProps) {
   const [state, formAction, pending] = useActionState(action, null);
 
@@ -34,7 +38,7 @@ export default function ProductForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Название *
+            {t(locale, "form.title")} *
           </label>
           <input
             name="title"
@@ -46,7 +50,7 @@ export default function ProductForm({
 
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Описание
+            {t(locale, "form.description")}
           </label>
           <textarea
             name="description"
@@ -67,11 +71,11 @@ export default function ProductForm({
           />
         </div>
 
-        <ImageUploadField defaultValue={product?.imageUrl} />
+        <ImageUploadField defaultValue={product?.imageUrl} locale={locale} />
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Цена (₸) *
+            {t(locale, "form.price")} *
           </label>
           <input
             name="price"
@@ -86,7 +90,7 @@ export default function ProductForm({
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Остаток *
+            {locale === "kz" ? "Осы" : "Остаток"} *
           </label>
           <input
             name="stockQuantity"
@@ -100,7 +104,7 @@ export default function ProductForm({
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Мин. заказ *
+            {t(locale, "form.min_order")} *
           </label>
           <input
             name="minOrder"
@@ -112,7 +116,7 @@ export default function ProductForm({
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Упаковка *
+            {t(locale, "form.packaging")} *
           </label>
           <input
             name="packaging"
@@ -124,7 +128,7 @@ export default function ProductForm({
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Температура
+            {locale === "kz" ? "Температура" : "Температура"}
           </label>
           <input
             name="temperature"
@@ -135,7 +139,7 @@ export default function ProductForm({
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Категория *
+            {t(locale, "form.category")} *
           </label>
           <select
             name="categoryId"
@@ -143,7 +147,7 @@ export default function ProductForm({
             defaultValue={product?.categoryId}
             className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-primary bg-white"
           >
-            <option value="">Выберите...</option>
+            <option value="">{locale === "kz" ? "Таңдаңыз..." : "Выберите..."}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -154,7 +158,7 @@ export default function ProductForm({
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            Производитель *
+            {t(locale, "form.manufacturer")} *
           </label>
           <select
             name="manufacturerId"
@@ -162,7 +166,7 @@ export default function ProductForm({
             defaultValue={product?.manufacturerId}
             className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-primary bg-white"
           >
-            <option value="">Выберите...</option>
+            <option value="">{locale === "kz" ? "Таңдаңыз..." : "Выберите..."}</option>
             {manufacturers.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
@@ -179,7 +183,7 @@ export default function ProductForm({
               defaultChecked={product?.isHalal ?? true}
               className="rounded border-border text-primary accent-primary h-4 w-4"
             />
-            <span className="text-sm font-medium text-text-primary">Халяль</span>
+            <span className="text-sm font-medium text-text-primary">{t(locale, "product.halal")}</span>
           </label>
         </div>
       </div>
@@ -190,13 +194,13 @@ export default function ProductForm({
           disabled={pending}
           className="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-dark transition-colors disabled:opacity-50"
         >
-          {pending ? "Сохранение..." : submitLabel}
+          {pending ? t(locale, "form.loading") : submitLabel}
         </button>
         <Link
           href="/admin/products"
           className="text-sm text-muted hover:text-primary transition-colors"
         >
-          Отмена
+          {t(locale, "form.cancel")}
         </Link>
       </div>
     </form>

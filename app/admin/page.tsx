@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { getDashboardStats } from "@/lib/queries";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 export default async function AdminDashboardPage() {
+  const locale = await getLocale();
   let stats = { products: 0, categories: 0, manufacturers: 0, activeProducts: 0 };
 
   try {
@@ -11,16 +14,16 @@ export default async function AdminDashboardPage() {
   }
 
   const cards = [
-    { label: "Товары", value: stats.products, href: "/admin/products", sub: `${stats.activeProducts} активных` },
-    { label: "Категории", value: stats.categories, href: "/admin/categories" },
-    { label: "Производители", value: stats.manufacturers, href: "/admin/manufacturers" },
+    { label: t(locale, "admin.products_count"), value: stats.products, href: "/admin/products", sub: `${stats.activeProducts} ${t(locale, "admin.active_products")}` },
+    { label: t(locale, "admin.categories"), value: stats.categories, href: "/admin/categories" },
+    { label: t(locale, "admin.manufacturers"), value: stats.manufacturers, href: "/admin/manufacturers" },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-2">Обзор</h1>
+      <h1 className="text-2xl font-bold text-text-primary mb-2">{t(locale, "admin.overview")}</h1>
       <p className="text-sm text-muted mb-8">
-        Управление каталогом замороженных продуктов
+        {t(locale, "admin.dashboard_desc")}
       </p>
 
       <div className="grid gap-4 sm:grid-cols-3 mb-8">

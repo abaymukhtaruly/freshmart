@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 import { removeCartItem, updateCartItemQuantity } from "@/actions/cart";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 type CartItemRowProps = {
   itemId: string;
@@ -23,8 +25,10 @@ export default function CartItemRow({
   inactive,
 }: CartItemRowProps) {
   const [pending, startTransition] = useTransition();
+  const { locale } = useLocale();
 
   const lineTotal = price * quantity;
+  const localeCode = locale === "kz" ? "kk-KZ" : "ru-RU";
 
   return (
     <div
@@ -45,10 +49,10 @@ export default function CartItemRow({
         <h3 className="text-sm font-semibold text-text-primary line-clamp-2">{title}</h3>
         <p className="text-xs text-muted mt-0.5">{manufacturer}</p>
         {inactive && (
-          <p className="text-xs text-accent mt-1">Товар больше недоступен</p>
+          <p className="text-xs text-accent mt-1">{locale === "kz" ? "Тауар енді қол жетімді емес" : "Товар больше недоступен"}</p>
         )}
         <p className="text-sm font-bold text-primary mt-2">
-          {price.toLocaleString("ru-RU")} ₸ / кг
+          {price.toLocaleString(localeCode)} ₸ / кг
         </p>
       </div>
 
@@ -59,7 +63,7 @@ export default function CartItemRow({
           onClick={() => startTransition(() => void removeCartItem(itemId))}
           className="text-xs text-muted hover:text-accent disabled:opacity-50"
         >
-          Удалить
+          {t(locale, "cart.remove")}
         </button>
 
         <div className="flex items-center gap-2">
@@ -87,7 +91,7 @@ export default function CartItemRow({
         </div>
 
         <p className="text-sm font-bold text-text-primary">
-          {lineTotal.toLocaleString("ru-RU")} ₸
+          {lineTotal.toLocaleString(localeCode)} ₸
         </p>
       </div>
     </div>

@@ -4,12 +4,15 @@ import { useActionState } from "react";
 import FormMessage from "@/components/admin/FormMessage";
 import type { ActionResult } from "@/lib/action-result";
 import type { Category } from "@prisma/client";
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 
 type CategoryFormProps = {
   categories: Category[];
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
   category?: Category;
   submitLabel: string;
+  locale?: Locale;
 };
 
 export default function CategoryForm({
@@ -17,6 +20,7 @@ export default function CategoryForm({
   action,
   category,
   submitLabel,
+  locale = "ru",
 }: CategoryFormProps) {
   const [state, formAction, pending] = useActionState(action, null);
   const parentOptions = categories.filter((c) => c.id !== category?.id);
@@ -29,23 +33,23 @@ export default function CategoryForm({
     >
       <FormMessage state={state} />
       <div className="flex-1 min-w-[160px]">
-        <label className="block text-xs font-medium text-muted mb-1">Название *</label>
+        <label className="block text-xs font-medium text-muted mb-1">{t(locale, "form.name")} *</label>
         <input
           name="name"
           required
           defaultValue={category?.name}
-          placeholder="Куриная продукция"
+          placeholder={locale === "kz" ? "Құс өнімі" : "Куриная продукция"}
           className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
         />
       </div>
       <div className="min-w-[160px]">
-        <label className="block text-xs font-medium text-muted mb-1">Родитель</label>
+        <label className="block text-xs font-medium text-muted mb-1">{locale === "kz" ? "Ата-аналығы" : "Родитель"}</label>
         <select
           name="parentId"
           defaultValue={category?.parentId ?? ""}
           className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-primary bg-white"
         >
-          <option value="">Нет (корневая)</option>
+          <option value="">{locale === "kz" ? "Ешбір (түбі)" : "Нет (корневая)"}</option>
           {parentOptions.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}

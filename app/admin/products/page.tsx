@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import ProductFilters from "@/components/admin/ProductFilters";
 import ProductRowActions from "@/components/admin/ProductRowActions";
 import { getAdminProducts, getCategories } from "@/lib/queries";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 type SearchParams = Promise<{ q?: string; category?: string; status?: string }>;
 
@@ -12,6 +14,7 @@ export default async function AdminProductsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const locale = await getLocale();
   const status =
     params.status === "active" || params.status === "inactive"
       ? params.status
@@ -36,17 +39,17 @@ export default async function AdminProductsPage({
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-text-primary">Товары</h1>
+        <h1 className="text-2xl font-bold text-text-primary">{t(locale, "admin.products")}</h1>
         <Link
           href="/admin/products/new"
           className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors"
         >
-          + Добавить
+          + {t(locale, "admin.add_product")}
         </Link>
       </div>
 
       <Suspense fallback={<div className="h-16 mb-6" />}>
-        <ProductFilters categories={categories} />
+        <ProductFilters categories={categories} locale={locale} />
       </Suspense>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden shadow-sm">

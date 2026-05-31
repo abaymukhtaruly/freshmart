@@ -2,8 +2,11 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import CartItemRow from "@/components/cart/CartItemRow";
 import { getOrCreateCart, getCartTotals } from "@/lib/cart";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 export default async function CartPage() {
+  const locale = await getLocale();
   let cart: Awaited<ReturnType<typeof getOrCreateCart>> | null = null;
 
   try {
@@ -20,11 +23,11 @@ export default async function CartPage() {
     <>
       <Navbar />
       <main className="flex-1 max-w-3xl mx-auto w-full px-8 py-8">
-        <h1 className="text-2xl font-bold text-text-primary mb-2">Корзина</h1>
+        <h1 className="text-2xl font-bold text-text-primary mb-2">{t(locale, "cart.title")}</h1>
         <p className="text-sm text-muted mb-8">
           {itemCount > 0
-            ? `${itemCount} поз. • ${total.toLocaleString("ru-RU")} ₸`
-            : "Корзина пуста"}
+            ? `${itemCount} ${locale === "kz" ? "өнім" : "поз."} • ${total.toLocaleString(locale === "kz" ? "kk-KZ" : "ru-RU")} ₸`
+            : t(locale, "cart.empty")}
         </p>
 
         {!cart || cart.items.length === 0 ? (
@@ -35,12 +38,12 @@ export default async function CartPage() {
             >
               shopping_cart
             </span>
-            <p className="text-muted mb-6">Добавьте товары из каталога</p>
+            <p className="text-muted mb-6">{locale === "kz" ? "Каталогтан тауар қосыңыз" : "Добавьте товары из каталога"}</p>
             <Link
               href="/catalog"
               className="inline-block bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-dark transition-colors"
             >
-              Перейти в каталог
+              {t(locale, "cart.browse")}
             </Link>
           </div>
         ) : (
@@ -73,7 +76,7 @@ export default async function CartPage() {
 
             <div className="bg-white border border-border rounded-xl p-6 shadow-sm flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted">Итого</p>
+                <p className="text-sm text-muted">{t(locale, "cart.summary")}</p>
                 <p className="text-2xl font-bold text-primary">
                   {total.toLocaleString("ru-RU")} ₸
                 </p>

@@ -2,8 +2,11 @@ import Link from "next/link";
 import ProductForm from "@/components/admin/ProductForm";
 import { createProduct } from "@/actions/products";
 import { getCategories, getManufacturers } from "@/lib/queries";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 export default async function NewProductPage() {
+  const locale = await getLocale();
   let categories: Awaited<ReturnType<typeof getCategories>> = [];
   let manufacturers: Awaited<ReturnType<typeof getManufacturers>> = [];
 
@@ -19,16 +22,16 @@ export default async function NewProductPage() {
   if (categories.length === 0 || manufacturers.length === 0) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-text-primary mb-4">Новый товар</h1>
+        <h1 className="text-2xl font-bold text-text-primary mb-4">{t(locale, "admin.new_product")}</h1>
         <p className="text-sm text-muted mb-4">
-          Сначала создайте хотя бы одну категорию и одного производителя.
+          {locale === "kz" ? "Снаалы жасаңыз кемінде бір санат және бір өндіруші" : "Сначала создайте хотя бы одну категорию и одного производителя."}
         </p>
         <div className="flex gap-3">
           <Link href="/admin/categories" className="text-primary font-medium hover:underline">
-            Категории
+            {t(locale, "admin.categories")}
           </Link>
           <Link href="/admin/manufacturers" className="text-primary font-medium hover:underline">
-            Производители
+            {t(locale, "admin.manufacturers")}
           </Link>
         </div>
       </div>
@@ -41,14 +44,15 @@ export default async function NewProductPage() {
         href="/admin/products"
         className="text-sm text-muted hover:text-primary transition-colors"
       >
-        ← Товары
+        ← {t(locale, "admin.products")}
       </Link>
-      <h1 className="text-2xl font-bold text-text-primary mt-2 mb-6">Новый товар</h1>
+      <h1 className="text-2xl font-bold text-text-primary mt-2 mb-6">{t(locale, "admin.new_product")}</h1>
       <ProductForm
         categories={categories}
         manufacturers={manufacturers}
         action={createProduct}
-        submitLabel="Создать товар"
+        submitLabel={t(locale, "admin.add_product")}
+        locale={locale}
       />
     </div>
   );

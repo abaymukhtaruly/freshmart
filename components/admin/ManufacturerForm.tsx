@@ -4,17 +4,21 @@ import { useActionState } from "react";
 import FormMessage from "@/components/admin/FormMessage";
 import type { ActionResult } from "@/lib/action-result";
 import type { Manufacturer } from "@prisma/client";
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 
 type ManufacturerFormProps = {
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
   manufacturer?: Manufacturer;
   submitLabel: string;
+  locale?: Locale;
 };
 
 export default function ManufacturerForm({
   action,
   manufacturer,
   submitLabel,
+  locale = "ru",
 }: ManufacturerFormProps) {
   const [state, formAction, pending] = useActionState(action, null);
 
@@ -28,7 +32,7 @@ export default function ManufacturerForm({
         <FormMessage state={state} />
       </div>
       <div className="flex-1 min-w-[160px]">
-        <label className="block text-xs font-medium text-muted mb-1">Название *</label>
+        <label className="block text-xs font-medium text-muted mb-1">{t(locale, "form.name")} *</label>
         <input
           name="name"
           required
@@ -38,7 +42,7 @@ export default function ManufacturerForm({
         />
       </div>
       <div className="flex-[2] min-w-[200px]">
-        <label className="block text-xs font-medium text-muted mb-1">Описание</label>
+        <label className="block text-xs font-medium text-muted mb-1">{t(locale, "form.description")}</label>
         <input
           name="description"
           defaultValue={manufacturer?.description ?? ""}
@@ -50,7 +54,7 @@ export default function ManufacturerForm({
         disabled={pending}
         className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors disabled:opacity-50"
       >
-        {pending ? "..." : submitLabel}
+        {pending ? t(locale, "form.loading") : submitLabel}
       </button>
     </form>
   );

@@ -4,6 +4,8 @@ import ProductForm from "@/components/admin/ProductForm";
 import { updateProduct } from "@/actions/products";
 import { getCategories, getManufacturers } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
+import { getLocale } from "@/lib/get-locale";
+import { t } from "@/lib/i18n";
 
 export default async function EditProductPage({
   params,
@@ -11,6 +13,7 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const locale = await getLocale();
 
   let product = null;
   let categories: Awaited<ReturnType<typeof getCategories>> = [];
@@ -36,15 +39,16 @@ export default async function EditProductPage({
         href="/admin/products"
         className="text-sm text-muted hover:text-primary transition-colors"
       >
-        ← Товары
+        ← {t(locale, "admin.products")}
       </Link>
-      <h1 className="text-2xl font-bold text-text-primary mt-2 mb-6">Редактировать товар</h1>
+      <h1 className="text-2xl font-bold text-text-primary mt-2 mb-6">{t(locale, "admin.edit_product")}</h1>
       <ProductForm
         product={product}
         categories={categories}
         manufacturers={manufacturers}
         action={boundUpdate}
-        submitLabel="Сохранить"
+        submitLabel={t(locale, "form.submit")}
+        locale={locale}
       />
     </div>
   );
